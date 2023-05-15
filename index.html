@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Jeu de devinette de nombre</title>
+</head>
+<body>
+	<h1>Jeu de devinette de nombre</h1>
+	<p>Devinez un nombre entre 1 et 100 :</p>
+	<input type="text" id="guessInput">
+	<button onclick="checkGuess()">Devinez</button>
+
+	<p>Propositions précédentes :</p>
+	<ul id="guessList"></ul>
+
+	<p id="result"></p>
+
+	<button onclick="resetGame()">Rejouer</button>
+
+	<script>
+
+    // Les Variables globales
+
+    let randomNumber = Math.floor(Math.random() * 100) + 1;
+
+    let guesses = document.querySelector('.guesses');
+    let lastResult = document.querySelector('.lastResult');
+    let lowOrHi = document.querySelector('.lowOrHi');
+
+    let guessSubmit = document.querySelector('.guessSubmit');
+    let guessField = document.querySelector('.guessField');
+
+    let guessCount = 1;
+    let resetButton;
+
+		// La Fonction pour générer un nombre aléatoire entre 1 et 100
+		function generateSecretNumber() {
+			secretNumber = Math.floor(Math.random() * 100) + 1;
+		}
+
+		// La Fonction pour vérifier la devinette du joueur
+		function checkGuess() {
+			var guessInput = document.getElementById("guessInput");
+			var guess = parseInt(guessInput.value);
+			if (isNaN(guess) || guess < 1 || guess > 100) {
+				alert("Veuillez saisir un nombre entre 1 et 100.");
+				return;
+			}
+			guessInput.value = "";
+			guesses.push(guess);
+			guessCount++;
+			var result = document.getElementById("result");
+			if (guess === secretNumber) {
+				result.innerHTML = "Bravo, vous avez deviné le nombre en " + guessCount + " tours !";
+				guessInput.disabled = true;
+			} else if (guessCount === 10) {
+				result.innerHTML = "Vous avez perdu ! Le nombre était " + secretNumber + ".";
+				guessInput.disabled = true;
+			} else {
+				var diff = Math.abs(guess - secretNumber);
+				var message = guess + " (";
+				if (diff < 5) {
+					message += "très proche MEC)";
+				} else if (diff < 10) {
+					message += "proche)";
+				} else {
+					message += "tes loin gerard)";
+				}
+				result.innerHTML = "Faux ! " + message + ". Il vous reste " + (10 - guessCount) + " tours.";
+			}
+			updateGuessList();
+		}
+
+		// La Fonction pour mettre à jour la liste des propositions précédentes
+		function updateGuessList() {
+			var guessList = document.getElementById("guessList");
+			guessList.innerHTML = "";
+			for (var i = 0; i < guesses.length; i++) {
+				var guessItem = document.createElement("li");
+				guessItem.innerHTML = guesses[i];
+				guessList.appendChild(guessItem);
+			}
+		}
+
+		// La Fonction pour réinitialiser le jeu
+		function resetGame() {
+			generateSecretNumber();
+			guessCount = 0;
+			guesses = [];
+			updateGuessList();
+			var result = document.getElementById("result");
+			result.innerHTML = "";
+			var guessInput = document.getElementById("guessInput");
+			guessInput.disabled = false;
+			guessInput.value = "";
+		}
+
+		// Initialisation du jeu au chargement de la page
+		window.onload = function() {
+			resetGame();
+		};
+	</script>
+    <script src="script.js"></script>
+</body>
+</html>
